@@ -1,0 +1,33 @@
+digraph lay_why_thinking_leaks {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why \"thinking\" mode can swallow the answer"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.3,0.22",
+           fillcolor="#161b22", fontsize=15];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.8, arrowsize=1.0];
+
+    subgraph cluster_on {
+        label="Reasoning switched ON"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        on1 [label="The worker gets TWO notepads:\na scratch pad for thinking,\nand a clean page for the real answer", color="#f0883e", fillcolor="#3a2412"];
+        on2 [label="Normally: scribbles on the\nscratch pad, THEN writes a\nclean answer on the real page", color="#3fb950", fillcolor="#173a24"];
+        on3 [label="Sometimes: fills the scratch pad,\nruns out of steam, and just... stops\n-- the real page is left blank", color="#f85149", fillcolor="#161b22"];
+        on4 [label="Hermes doesn't want to hand back\nnothing, so it copies the scratch\npad over as if it were the answer", color="#d29922", fillcolor="#1f2937"];
+        on5 [label="Result: a response that READS\nlike an answer but is really just\nunfinished private notes", shape=oval, color="#f85149", fillcolor="#1f2937", penwidth=3];
+    }
+
+    subgraph cluster_off {
+        label="Reasoning switched OFF"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        off1 [label="The worker gets ONE notepad,\nperiod -- no separate scratch pad", color="#3fb950", fillcolor="#173a24"];
+        off2 [label="Whatever it writes IS the answer\n-- there's no private page to\nstash a half-finished thought on", color="#3fb950", fillcolor="#173a24"];
+        off3 [label="Nothing for Hermes to \"stand in\"\nfor -- either a real answer\nshows up, or nothing does", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    on1 -> on2 -> on3 -> on4 -> on5;
+    off1 -> off2 -> off3;
+
+    note [label="This isn't about the worker getting smarter\nor dumber -- it's about whether a place to\nleave an unfinished thought EXISTS at all.", shape=note, fontcolor="#d29922", color="#d29922"];
+    on5 -> note [style=dotted, dir=none, color="#d29922"];
+    note -> off1 [style=dotted, color="#d29922"];
+}

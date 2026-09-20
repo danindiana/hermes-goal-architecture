@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-9%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-11%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-architecture/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-architecture/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-architecture">
@@ -48,6 +48,12 @@ what Hermes and Ollama are, what a standing goal actually does, why the loop som
 stuck, and what fixed it — without any code, file paths, or technical vocabulary. Three diagrams
 (07-09) go with it, using plain-English labels instead of function/class names.
 
+[`docs/why_reasoning_affects_goals.md`](docs/why_reasoning_affects_goals.md) answers one specific
+follow-up question in the same plain-language register: *why does turning reasoning on or off
+affect goal functionality at all?* Two diagrams (10-11): why "thinking" mode can leave an answer
+unfinished, and why that specifically hurts an unsupervised standing goal far more than an
+ordinary back-and-forth chat.
+
 ## The four technical levels
 
 **Level 1 — System context.** Zoom all the way out: Hermes Agent isn't one model, it's three
@@ -86,6 +92,8 @@ eliminates an entire class of stalled-loop failures by construction rather than 
 | 07 | lay | [`lay_big_picture`](diagrams/07_lay_big_picture.svg) | The four helpers, in plain terms — no jargon |
 | 08 | lay | [`lay_how_a_turn_works`](diagrams/08_lay_how_a_turn_works.svg) | One round of work, in plain terms |
 | 09 | lay | [`lay_reasoning_off_fix`](diagrams/09_lay_reasoning_off_fix.svg) | Why it looked stuck and what fixed it, in plain terms |
+| 10 | lay | [`lay_why_thinking_leaks`](diagrams/10_lay_why_thinking_leaks.svg) | Why "thinking" mode can leave the real answer unwritten |
+| 11 | lay | [`lay_why_goals_hurt_more`](diagrams/11_lay_why_goals_hurt_more.svg) | Why this hits an unsupervised goal loop far harder than a normal chat |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -110,6 +118,7 @@ One doc per diagram, each going deeper than the README summary above:
 | [`docs/goal_loop_driver_shapes.md`](docs/goal_loop_driver_shapes.md) | 3b | Why four surfaces need different drivers for the same engine |
 | [`docs/ollama_request_response_anatomy.md`](docs/ollama_request_response_anatomy.md) | 4 | Every request/response field, and the `think` gotcha |
 | [`docs/lay_explain.md`](docs/lay_explain.md) | lay | The whole story, no code or jargon |
+| [`docs/why_reasoning_affects_goals.md`](docs/why_reasoning_affects_goals.md) | lay | One focused question: why does reasoning on/off change goal reliability at all? |
 
 ## Repo structure
 
@@ -126,7 +135,9 @@ One doc per diagram, each going deeper than the README summary above:
 │   ├── 06_ollama_request_response_anatomy.{dot,png,svg}
 │   ├── 07_lay_big_picture.{dot,png,svg}
 │   ├── 08_lay_how_a_turn_works.{dot,png,svg}
-│   └── 09_lay_reasoning_off_fix.{dot,png,svg}
+│   ├── 09_lay_reasoning_off_fix.{dot,png,svg}
+│   ├── 10_lay_why_thinking_leaks.{dot,png,svg}
+│   └── 11_lay_why_goals_hurt_more.{dot,png,svg}
 ├── docs/
 │   ├── system_context.md
 │   ├── component_architecture.md
@@ -134,7 +145,8 @@ One doc per diagram, each going deeper than the README summary above:
 │   ├── goal_state_machine.md
 │   ├── goal_loop_driver_shapes.md
 │   ├── ollama_request_response_anatomy.md
-│   └── lay_explain.md
+│   ├── lay_explain.md
+│   └── why_reasoning_affects_goals.md
 ├── .github/workflows/verify-diagrams.yml
 ├── LICENSE
 └── README.md

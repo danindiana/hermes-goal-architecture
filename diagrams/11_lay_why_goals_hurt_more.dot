@@ -1,0 +1,33 @@
+digraph lay_why_goals_hurt_more {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why this hurts a standing goal far more than an ordinary chat"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.3,0.22",
+           fillcolor="#161b22", fontsize=15];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.8, arrowsize=1.0];
+
+    subgraph cluster_chat {
+        label="Ordinary chat -- a person is watching"; style="dashed"; color="#39c5cf"; fontcolor="#39c5cf";
+        c1 [label="Worker hands back unfinished\nnotes instead of a real answer", color="#f0883e", fillcolor="#161b22"];
+        c2 [label="YOU see it right away --\nit reads oddly, too short,\nor beside the point", color="#39c5cf", fillcolor="#0d2e2e"];
+        c3 [label="You just say \"no, actually\ndo/answer this\" -- caught\nand fixed in seconds", shape=oval, color="#3fb950", fillcolor="#12351f"];
+    }
+
+    subgraph cluster_goal {
+        label="A standing goal -- nobody is watching each step"; style="dashed"; color="#bc8cff"; fontcolor="#bc8cff";
+        g1 [label="Worker hands back unfinished\nnotes instead of real work", color="#f0883e", fillcolor="#161b22"];
+        g2 [label="No human reads this turn --\nonly the reviewer does,\nautomatically", color="#bc8cff", fillcolor="#2e1a4d"];
+        g3 [label="The notes often SOUND like\nprogress (\"I should now do X\")\neven though nothing got done", color="#f85149", fillcolor="#161b22"];
+        g4 [label="Reviewer reasonably says\n\"keep going\" -- it can only\njudge the words it's shown", color="#d29922", fillcolor="#1f2937"];
+        g5 [label="The loop keeps running,\nturn after turn, without\nreal progress landing", shape=oval, color="#f85149", fillcolor="#1f2937", penwidth=3];
+        g6 [label="You only notice much later --\nwhen the task STILL isn't\ndone after far too long", shape=oval, color="#f85149", fillcolor="#161b22"];
+    }
+
+    irony [label="The tasks worth setting a standing\ngoal for are exactly the long, deep,\nmulti-step ones -- and those are the\nsame conditions most likely to trigger\nthe unfinished-notes problem in the\nfirst place.", shape=note, fontcolor="#d29922", color="#d29922"];
+
+    c1 -> c2 -> c3;
+    g1 -> g2 -> g3 -> g4 -> g5 -> g6;
+    g6 -> irony [style=dotted, dir=none, color="#d29922"];
+}
