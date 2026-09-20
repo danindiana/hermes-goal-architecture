@@ -1,0 +1,38 @@
+digraph ollama_request_response_anatomy {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 4 -- The actual wire request/response for one Ollama chat completion"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_req {
+        label="POST localhost:11434/v1/chat/completions"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        req_model [label="model: 'qwen3.5:9b-vram-fit-pp0'", color="#3fb950", fillcolor="#161b22"];
+        req_msgs [label="messages: [...]\n(system + full conversation history,\nHermes-managed, not Ollama's job)", color="#3fb950", fillcolor="#161b22"];
+        req_tools [label="tools: [...]\n(read_file, write_file, terminal, ...)", color="#3fb950", fillcolor="#161b22"];
+        req_opts [label="options: {num_ctx: 262144}\n(from model.context_length,\nonly if it matches the running model)", color="#3fb950", fillcolor="#161b22"];
+        req_think [label="think: true | false\n(false ONLY if /reasoning none --\ngraded low/med/high never forward\nto local Ollama)", color="#f0883e", fillcolor="#3a2412", penwidth=3];
+        req_penalty [label="presence_penalty, temperature,\ntop_p, top_k\n(baked into the Modelfile tag,\nnot set per-request by Hermes)", color="#3fb950", fillcolor="#161b22"];
+    }
+
+    subgraph cluster_resp {
+        label="Ollama's response"; style="dashed"; color="#58a6ff"; fontcolor="#58a6ff";
+        resp_content [label="message.content\n(the visible final answer)", color="#58a6ff", fillcolor="#13294d"];
+        resp_thinking [label="message.thinking\n(only present if think=true --\nseparate channel from content)", color="#f0883e", fillcolor="#3a2412"];
+        resp_tools [label="message.tool_calls\n([] if none this turn)", color="#58a6ff", fillcolor="#13294d"];
+        resp_reason [label="done_reason: 'stop' | 'length'\n('stop' = model chose to end;\n'length' = hit num_predict cap)", color="#58a6ff", fillcolor="#13294d"];
+    }
+
+    classify [label="Hermes classifies:\nstop + no tool_calls + empty content\n+ non-empty thinking\n= 'reasoning-only clean stop'", shape=diamond, color="#f85149", fillcolor="#161b22", penwidth=3];
+
+    struct [label="think=false -> no 'thinking' field\nat all -> this classification is\nSTRUCTURALLY UNREACHABLE", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    req_model -> req_msgs -> req_tools -> req_opts -> req_think -> req_penalty [style=invis];
+    req_penalty -> resp_content [label="  Ollama processes\n  the request", color="#8b949e"];
+    resp_content -> resp_thinking -> resp_tools -> resp_reason [style=invis];
+    resp_reason -> classify;
+    req_think -> struct [style=dashed, color="#3fb950", label="  when false"];
+}

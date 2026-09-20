@@ -1,0 +1,32 @@
+digraph component_architecture {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 2a -- Major components inside the Hermes process, for one turn"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    cli [label="cli.py\nHermesCLI: process_command(),\nchat(), _run_quiet_single_query()", color="#58a6ff", fillcolor="#0d3a6b"];
+    turn_facade [label="agent/turn_facade.py\nrun_conversation() -- the ONE\nentry point for every live turn", color="#58a6ff", fillcolor="#13294d", penwidth=3];
+    conv_loop [label="agent/conversation_loop.py\nAPI-call retry loop, streaming,\ninterrupt handling", color="#3fb950", fillcolor="#173a24"];
+    provider [label="plugins/model-providers/custom/\nCustomProfile -- builds the Ollama\nrequest (think, num_ctx, penalties)", color="#3fb950", fillcolor="#173a24"];
+    final_resp [label="agent/turn_final_response.py\nreasoning-only-stop detection,\nempty-response recovery", color="#d29922", fillcolor="#1f2937"];
+    tool_exec [label="agent/tool_executor.py\ndispatches to Docker sandbox\nor in-process tools", color="#f0883e", fillcolor="#3a2412"];
+    goals [label="hermes_cli/goals.py\nGoalManager, GoalState,\njudge_goal(), evaluate_after_turn()", color="#bc8cff", fillcolor="#2e1a4d", penwidth=3];
+    review [label="agent/background_review.py +\nreview_idle_queue.py\nskill/memory nudges (forked agent)", color="#39c5cf", fillcolor="#0d2e2e"];
+    interrupt [label="agent/interrupt_control.py\ninterrupt(), interrupt_issuer()\nuser vs. system-issued", color="#f85149", fillcolor="#161b22"];
+
+    cli -> turn_facade -> conv_loop;
+    conv_loop -> provider [label="  build request", color="#3fb950"];
+    conv_loop -> final_resp [label="  classify response", color="#d29922"];
+    conv_loop -> tool_exec [label="  execute tool calls", color="#f0883e"];
+    turn_facade -> review [style=dashed, label="  cancels prior review\n  fork, first action", color="#39c5cf"];
+    interrupt -> conv_loop [style=dashed, label="  can abort mid-call", color="#f85149"];
+    cli -> goals [label="  post-turn hook\n  (interactive) /\n  loop driver (-q)", color="#bc8cff", penwidth=2];
+    goals -> conv_loop [style=dashed, label="  feeds continuation\n  prompt as next turn", color="#bc8cff"];
+
+    note [label="Level 2b (next diagram) walks this same\nset of components as a real sequence,\none turn start to finish.", shape=note, fontcolor="#adbac7", color="#8b949e"];
+    goals -> note [style=dotted, dir=none, color="#8b949e"];
+}

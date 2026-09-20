@@ -1,0 +1,45 @@
+digraph system_context {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 1 -- System context: three separate inference/execution surfaces, one process"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    user [label="Operator\n(terminal / TUI)", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    subgraph cluster_hermes {
+        label="Hermes Agent process\n(cli.py, agent/*, hermes_cli/*)"; style="rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        hermes [label="HermesCLI + AIAgent\nconversation_loop, GoalManager,\ntool_executor", color="#58a6ff", fillcolor="#0d3a6b", penwidth=3];
+    }
+
+    subgraph cluster_local {
+        label="Local inference"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        ollama [label="Ollama daemon\nlocalhost:11434/v1", color="#3fb950", fillcolor="#173a24"];
+        gpu [label="GPU(s)\ne.g. RTX 4080S + RTX 5070", color="#3fb950", fillcolor="#161b22"];
+    }
+
+    subgraph cluster_cloud {
+        label="Cloud auxiliary calls"; style="dashed"; color="#bc8cff"; fontcolor="#bc8cff";
+        judge [label="Anthropic API\n(goal judge, delegation)\napi.anthropic.com", color="#bc8cff", fillcolor="#2e1a4d"];
+    }
+
+    subgraph cluster_sandbox {
+        label="Tool execution sandbox"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        docker [label="Docker container\n(shell/file tools,\nnot model-serving)", color="#f0883e", fillcolor="#3a2412"];
+    }
+
+    state [label="~/.hermes/\nconfig.yaml, logs/agent.log,\nSessionDB (GoalState, history)", shape=cylinder, color="#d29922", fillcolor="#1f2937"];
+
+    user -> hermes [label="  types /goal, chat", color="#58a6ff"];
+    hermes -> ollama [label="  chat completions\n  (the main model)", color="#3fb950", penwidth=2];
+    ollama -> gpu [dir=none, color="#3fb950"];
+    hermes -> judge [label="  goal judge verdict\n  (SEPARATE from main model)", color="#bc8cff", penwidth=2];
+    hermes -> docker [label="  terminal/file tool calls", color="#f0883e", penwidth=2];
+    hermes -> state [dir=both, style=dashed, color="#d29922"];
+
+    note [label="Common misconception: 'the model' does everything.\nActually three separate surfaces: local chat model,\ncloud judge, and a sandboxed shell -- each with its\nown failure modes this repo's diagrams cover.", shape=note, fontcolor="#adbac7", color="#8b949e"];
+    hermes -> note [style=dotted, dir=none, color="#8b949e"];
+}

@@ -1,0 +1,30 @@
+digraph goal_state_machine {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 3a -- GoalState lifecycle and evaluate_after_turn()'s decision"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    none [label="no goal\n(mgr.has_goal() == False)", shape=oval, color="#8b949e", fillcolor="#161b22"];
+    active [label="active\nturns_used < max_turns", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    waiting [label="active, waiting\n(pid / session / deadline barrier)\nno turn burned while parked", color="#39c5cf", fillcolor="#0d2e2e"];
+    paused [label="paused\n(user, interrupt, budget,\nblocked verdict, judge failures)", color="#d29922", fillcolor="#1f2937"];
+    done [label="done\n(judge verdict=done)", shape=oval, color="#58a6ff", fillcolor="#13294d", penwidth=3];
+    cleared [label="cleared\n(/goal clear)", shape=oval, color="#8b949e", fillcolor="#161b22"];
+
+    none -> active [label="  /goal <text>", color="#3fb950"];
+    active -> waiting [label="  judge verdict=wait\n  or /goal wait <pid>", color="#39c5cf"];
+    waiting -> active [label="  barrier clears", color="#39c5cf"];
+    active -> active [label="  verdict=continue\n  (most common edge)", color="#3fb950"];
+    active -> paused [label="  Ctrl+C / budget\n  exhausted / blocked /\n  judge failures N-in-a-row", color="#f85149"];
+    active -> paused [label="  system-issued abort,\n  capped retries exceeded\n  (session_1789857956 fix)", color="#f0883e"];
+    paused -> active [label="  /goal resume", color="#d29922"];
+    active -> done [label="  verdict=done", color="#58a6ff"];
+    { active waiting paused done } -> cleared [label="  /goal clear", color="#8b949e"];
+
+    note [label="evaluate_after_turn() runs gates\nBEFORE the judge -- a failing gate is\ndeterministic evidence of not-done,\njudge is skipped that turn.", shape=note, fontcolor="#adbac7", color="#8b949e"];
+    active -> note [style=dotted, dir=none, color="#8b949e"];
+}

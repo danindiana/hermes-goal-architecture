@@ -1,0 +1,36 @@
+digraph goal_loop_driver_shapes {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 3b -- Four surfaces, one shared engine (GoalManager.evaluate_after_turn)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    engine [label="GoalManager.evaluate_after_turn() /\nnext_continuation_prompt()\ngates + contract + wait-barrier +\nbudget + pause -- the ONE real engine", shape=box3d, color="#58a6ff", fillcolor="#0d3a6b", penwidth=3];
+
+    subgraph cluster_tui {
+        label="Interactive TUI/chat"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        tui [label="_maybe_continue_goal_after_turn()\none call per completed REPL turn;\nan external polling loop drives it", color="#3fb950", fillcolor="#1f2937"];
+    }
+    subgraph cluster_gateway {
+        label="Messaging gateway"; style="dashed"; color="#39c5cf"; fontcolor="#39c5cf";
+        gw [label="_post_turn_goal_continuation()\nasync -- enqueues onto a FIFO a\nlong-lived event loop drains later", color="#39c5cf", fillcolor="#0d2e2e"];
+    }
+    subgraph cluster_cliq {
+        label="Single-query automation (-q/-Q)"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        cliq [label="run_cli_goal_loop()\nsynchronous while-loop a one-shot\nprocess runs to completion, then exits", color="#f0883e", fillcolor="#161b22", penwidth=3];
+    }
+    subgraph cluster_kanban {
+        label="Kanban goal-mode cards"; style="dashed"; color="#d29922"; fontcolor="#d29922";
+        kanban [label="run_kanban_goal_loop()\nDELIBERATELY SEPARATE -- bypasses\nGoalManager, bare judge_goal() calls,\nboard-tool continuation prompts", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    engine -> tui [dir=back, color="#3fb950"];
+    engine -> gw [dir=back, color="#39c5cf"];
+    engine -> cliq [dir=back, color="#f0883e", penwidth=3];
+
+    note [label="Kanban's loop is a SEPARATE, simpler\nengine on purpose (ephemeral worker,\nno GoalState persistence needed) --\nnot a fourth shape of the same engine.", shape=note, fontcolor="#adbac7", color="#8b949e"];
+    kanban -> note [style=dotted, dir=none, color="#8b949e"];
+}

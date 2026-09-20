@@ -1,0 +1,35 @@
+digraph turn_lifecycle_sequence {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Level 2b -- One turn, start to finish, in sequence"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    s1 [label="1. Input arrives\n(user message, or a queued\ngoal-continuation prompt)", color="#58a6ff", fillcolor="#13294d"];
+    s2 [label="2. run_conversation() starts\ncancels any in-flight background\nreview fork for this session", color="#58a6ff", fillcolor="#0d3a6b"];
+    s3 [label="3. CustomProfile builds the\nOllama request: messages, tools,\noptions{num_ctx}, think, penalties", color="#3fb950", fillcolor="#173a24"];
+    s4 [label="4. API call to Ollama\n(retried on stale-stream timeout;\nabortable by interrupt_control)", color="#3fb950", fillcolor="#173a24"];
+    s5 [label="5. Response classified:\ntool_calls? content? reasoning-only?\ninterrupted? finish_reason?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    s6a [label="5a. Tool calls present\n-> tool_executor dispatches\n(Docker sandbox or in-process)", color="#f0883e", fillcolor="#3a2412"];
+    s6b [label="5b. Reasoning-only clean stop\n-> synthesize final_response\nfrom the reasoning text", color="#f85149", fillcolor="#161b22"];
+    s6c [label="5c. Interrupted\n-> mark turn_exit_reason\n(user- or system-issued)", color="#f85149", fillcolor="#161b22"];
+    s6d [label="5d. Normal text response\n-> done", color="#3fb950", fillcolor="#12351f"];
+
+    s7 [label="6. Turn ends, logged\n(Turn ended: reason=...)", color="#adbac7", fillcolor="#161b22"];
+    s8 [label="7. Post-turn hooks:\nif nudge interval due, maybe\nspawn a background review fork", color="#39c5cf", fillcolor="#0d2e2e"];
+    s9 [label="8. If a goal is active:\nevaluate_after_turn() -- judge\ncall to Anthropic, decide next", color="#bc8cff", fillcolor="#2e1a4d", penwidth=3];
+    s10 [label="9. should_continue?\nqueue the continuation prompt\nas the NEXT turn's input", shape=oval, color="#bc8cff", fillcolor="#2e1a4d"];
+
+    s1 -> s2 -> s3 -> s4 -> s5;
+    s5 -> s6a [label="yes", color="#f0883e"];
+    s5 -> s6b [label="reasoning\nonly", color="#f85149"];
+    s5 -> s6c [label="yes", color="#f85149"];
+    s5 -> s6d [label="no", color="#3fb950"];
+    s6a -> s7; s6b -> s7; s6c -> s7; s6d -> s7;
+    s7 -> s8 -> s9 -> s10;
+    s10 -> s1 [style=dashed, label="  loop", color="#8b949e"];
+}

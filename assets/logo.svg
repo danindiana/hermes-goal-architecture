@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 640 200">
+  <defs>
+    <linearGradient id="l1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#0d3a6b"/>
+    </linearGradient>
+    <linearGradient id="l2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3fb950"/>
+      <stop offset="100%" stop-color="#173a24"/>
+    </linearGradient>
+    <linearGradient id="l3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bc8cff"/>
+      <stop offset="100%" stop-color="#2e1a4d"/>
+    </linearGradient>
+    <linearGradient id="l4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0883e"/>
+      <stop offset="100%" stop-color="#3a2412"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="640" height="200" fill="#0d1117"/>
+
+  <g transform="translate(48,38)" filter="url(#glow)">
+    <rect x="0" y="0" width="120" height="22" rx="5" fill="url(#l1)" stroke="#58a6ff" stroke-width="1.5"/>
+    <rect x="0" y="30" width="120" height="22" rx="5" fill="url(#l2)" stroke="#3fb950" stroke-width="1.5"/>
+    <rect x="0" y="60" width="120" height="22" rx="5" fill="url(#l3)" stroke="#bc8cff" stroke-width="1.5"/>
+    <rect x="0" y="90" width="120" height="22" rx="5" fill="url(#l4)" stroke="#f0883e" stroke-width="1.5"/>
+  </g>
+
+  <text x="200" y="85" font-family="Helvetica, Arial, sans-serif" font-size="40"
+        font-weight="700" fill="#dfe6ee">hermes-goal-</text>
+  <text x="200" y="133" font-family="Helvetica, Arial, sans-serif" font-size="40"
+        font-weight="700" fill="#58a6ff">architecture</text>
+</svg>
