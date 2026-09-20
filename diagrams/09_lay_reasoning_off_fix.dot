@@ -1,0 +1,35 @@
+digraph lay_reasoning_off_fix {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why it looked stuck, and what actually fixed it"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.3,0.22",
+           fillcolor="#161b22", fontsize=15];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.8, arrowsize=1.0];
+
+    subgraph cluster_before {
+        label="Before: worker allowed to \"think out loud\""; style="dashed"; color="#f85149"; fontcolor="#f85149";
+        b1 [label="Worker mutters a plan to itself\n(\"first I should check X,\nthen probably do Y...\")", color="#f0883e", fillcolor="#161b22"];
+        b2 [label="Never actually finishes\nthe thought with a real\nanswer or action", color="#f85149", fillcolor="#161b22"];
+        b3 [label="The muttering gets used as\nthe \"answer\" anyway", color="#f85149", fillcolor="#161b22"];
+        b4 [label="Looks like the task moved\nforward -- it didn't", shape=oval, color="#f85149", fillcolor="#1f2937"];
+        b5 [label="Happened 8 times in\nabout 40 minutes, getting\nmore frequent", color="#f85149", fillcolor="#161b22", penwidth=2];
+    }
+
+    subgraph cluster_after {
+        label="After: worker told \"just act, don't narrate\""; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="Operator flips one setting:\n\"no more thinking out loud\"", color="#58a6ff", fillcolor="#13294d"];
+        a2 [label="Worker has nowhere to\nstash a half-finished\nthought anymore", color="#3fb950", fillcolor="#173a24"];
+        a3 [label="Every response is either\na real answer or a real action", color="#3fb950", fillcolor="#1f2937"];
+        a4 [label="Real, verified progress\nevery single time", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+        a5 [label="Ran for the rest of a long\nsession with the problem\nnever coming back", color="#3fb950", fillcolor="#161b22", penwidth=2];
+    }
+
+    b1 -> b2 -> b3 -> b4 -> b5;
+    a1 -> a2 -> a3 -> a4 -> a5;
+
+    note [label="Same worker, same task, same evening --\nthe ONLY thing that changed was\nturning off the \"thinking out loud\" setting.", shape=note, fontcolor="#d29922", color="#d29922"];
+    b5 -> note [style=dotted, dir=none, color="#d29922"];
+    note -> a1 [style=dotted, color="#d29922"];
+}

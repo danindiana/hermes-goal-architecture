@@ -1,0 +1,29 @@
+digraph lay_big_picture {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="The big picture, in plain terms"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.3,0.22",
+           fillcolor="#161b22", fontsize=15];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.8, arrowsize=1.0];
+
+    you [label="You", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    manager [label="The manager\n(Hermes)\nkeeps track of everything,\ndecides who does what", color="#58a6ff", fillcolor="#0d3a6b", penwidth=3];
+
+    worker [label="The worker\n(your local AI model, via Ollama)\ndoes the actual reading,\nwriting, and thinking", color="#3fb950", fillcolor="#173a24"];
+
+    reviewer [label="The reviewer\n(a separate, cloud-hosted AI)\nchecks in after every step:\n\"is the task actually done yet?\"", color="#bc8cff", fillcolor="#2e1a4d"];
+
+    workshop [label="The workshop\n(a sealed-off container)\nwhere anything risky --\nrunning commands, editing files --\nactually happens", color="#f0883e", fillcolor="#3a2412"];
+
+    you -> manager [label="  \"do this task,\n  keep at it until\n  it's really done\"", color="#58a6ff"];
+    manager -> worker [label="  hands over the work", color="#3fb950"];
+    worker -> workshop [label="  \"go run this,\n  go edit that\"", color="#f0883e"];
+    workshop -> worker [label="  results back", color="#f0883e"];
+    worker -> manager [label="  \"here's what\n  I did\"", color="#3fb950"];
+    manager -> reviewer [label="  \"is this\n  actually finished?\"", color="#bc8cff"];
+    reviewer -> manager [label="  \"not yet\" or \"yes, done\"", color="#bc8cff"];
+    manager -> worker [style=dashed, label="  \"keep going\"\n  (if not yet)", color="#8b949e"];
+}

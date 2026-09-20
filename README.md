@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-6%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-9%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-architecture/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-architecture/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-architecture">
@@ -18,23 +18,37 @@
 
 A layered explanation of how [Hermes Agent](https://hermes-agent.nousresearch.com/)'s `/goal`
 feature actually works against a local [Ollama](https://ollama.com/) model — from the system-level
-"what talks to what" down to the literal bytes on the wire for a single request. Four levels, six
-diagrams, each grounded in real source (file:line citations throughout) and, where applicable, real
-`agent.log` evidence from a running system — not a from-memory sketch of how it's supposed to work.
+"what talks to what" down to the literal bytes on the wire for a single request, plus a
+plain-language version for readers who don't want the technical depth. Four technical levels, nine
+diagrams total, each grounded in real source (file:line citations throughout) and, where
+applicable, real `agent.log` evidence from a running system — not a from-memory sketch of how it's
+supposed to work.
 
 This repo is a companion to [`hermes-goal-loop-deferral`](https://github.com/danindiana/hermes-goal-loop-deferral),
 which diagnoses and fixes two specific `/goal` bugs in depth. That repo is a case study; this one
 is the reference architecture the case study sits inside of.
 
+**New to this and don't want the technical version yet?** Start with
+[`docs/lay_explain.md`](docs/lay_explain.md) — no code, no jargon, just what the system does and
+why it sometimes seemed to get stuck, in plain language.
+
 ## Contents
 
-- [The four levels](#the-four-levels)
+- [Plain-language explainer](#plain-language-explainer)
+- [The four technical levels](#the-four-technical-levels)
 - [Diagrams](#diagrams)
 - [Documentation](#documentation)
 - [Repo structure](#repo-structure)
 - [License](#license)
 
-## The four levels
+## Plain-language explainer
+
+[`docs/lay_explain.md`](docs/lay_explain.md) covers the same ground as the four levels below —
+what Hermes and Ollama are, what a standing goal actually does, why the loop sometimes looked
+stuck, and what fixed it — without any code, file paths, or technical vocabulary. Three diagrams
+(07-09) go with it, using plain-English labels instead of function/class names.
+
+## The four technical levels
 
 **Level 1 — System context.** Zoom all the way out: Hermes Agent isn't one model, it's three
 separate inference/execution surfaces (a local Ollama chat model, a cloud-hosted Anthropic judge,
@@ -69,6 +83,9 @@ eliminates an entire class of stalled-loop failures by construction rather than 
 | 04 | 3a | [`goal_state_machine`](diagrams/04_goal_state_machine.svg) | `GoalState`'s lifecycle and `evaluate_after_turn()`'s decision |
 | 05 | 3b | [`goal_loop_driver_shapes`](diagrams/05_goal_loop_driver_shapes.svg) | Four surfaces, one shared engine (plus Kanban's deliberate exception) |
 | 06 | 4 | [`ollama_request_response_anatomy`](diagrams/06_ollama_request_response_anatomy.svg) | The literal request/response fields, and where a reasoning-only stall comes from |
+| 07 | lay | [`lay_big_picture`](diagrams/07_lay_big_picture.svg) | The four helpers, in plain terms — no jargon |
+| 08 | lay | [`lay_how_a_turn_works`](diagrams/08_lay_how_a_turn_works.svg) | One round of work, in plain terms |
+| 09 | lay | [`lay_reasoning_off_fix`](diagrams/09_lay_reasoning_off_fix.svg) | Why it looked stuck and what fixed it, in plain terms |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -92,6 +109,7 @@ One doc per diagram, each going deeper than the README summary above:
 | [`docs/goal_state_machine.md`](docs/goal_state_machine.md) | 3a | Every state transition and what triggers it |
 | [`docs/goal_loop_driver_shapes.md`](docs/goal_loop_driver_shapes.md) | 3b | Why four surfaces need different drivers for the same engine |
 | [`docs/ollama_request_response_anatomy.md`](docs/ollama_request_response_anatomy.md) | 4 | Every request/response field, and the `think` gotcha |
+| [`docs/lay_explain.md`](docs/lay_explain.md) | lay | The whole story, no code or jargon |
 
 ## Repo structure
 
@@ -105,14 +123,18 @@ One doc per diagram, each going deeper than the README summary above:
 │   ├── 03_turn_lifecycle_sequence.{dot,png,svg}
 │   ├── 04_goal_state_machine.{dot,png,svg}
 │   ├── 05_goal_loop_driver_shapes.{dot,png,svg}
-│   └── 06_ollama_request_response_anatomy.{dot,png,svg}
+│   ├── 06_ollama_request_response_anatomy.{dot,png,svg}
+│   ├── 07_lay_big_picture.{dot,png,svg}
+│   ├── 08_lay_how_a_turn_works.{dot,png,svg}
+│   └── 09_lay_reasoning_off_fix.{dot,png,svg}
 ├── docs/
 │   ├── system_context.md
 │   ├── component_architecture.md
 │   ├── turn_lifecycle_sequence.md
 │   ├── goal_state_machine.md
 │   ├── goal_loop_driver_shapes.md
-│   └── ollama_request_response_anatomy.md
+│   ├── ollama_request_response_anatomy.md
+│   └── lay_explain.md
 ├── .github/workflows/verify-diagrams.yml
 ├── LICENSE
 └── README.md

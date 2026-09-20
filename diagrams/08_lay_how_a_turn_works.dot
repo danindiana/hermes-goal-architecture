@@ -1,0 +1,33 @@
+digraph lay_how_a_turn_works {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="One round of work, in plain terms"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.3,0.22",
+           fillcolor="#161b22", fontsize=15];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.8, arrowsize=1.0];
+
+    ask [label="1. The worker gets asked\nto do something\n(either by you, or by\n\"keep going\" from last time)", color="#58a6ff", fillcolor="#13294d"];
+
+    work [label="2. The worker does the work\n(reads things, writes things,\nmaybe several small steps)", color="#3fb950", fillcolor="#173a24"];
+
+    result [label="3. What came back?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    real_answer [label="A real answer or\nreal work done", color="#3fb950", fillcolor="#12351f"];
+    just_thinking [label="Only \"notes to self\" --\nno actual answer\nor action taken", color="#f85149", fillcolor="#161b22"];
+
+    checkin [label="4. The reviewer checks in:\n\"is the overall task done?\"", color="#bc8cff", fillcolor="#2e1a4d", penwidth=3];
+
+    done [label="Done -- stop", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+    keepgoing [label="Not done yet --\nask the worker to keep going\n(back to step 1, automatically)", shape=oval, color="#3fb950", fillcolor="#12351f"];
+
+    ask -> work -> result;
+    result -> real_answer [label="  usually", color="#3fb950"];
+    result -> just_thinking [label="  sometimes", color="#f85149"];
+    real_answer -> checkin;
+    just_thinking -> checkin [style=dashed, label="  (the notes get\n  used as a stand-in\n  answer)", color="#f85149"];
+    checkin -> done [label="  yes"];
+    checkin -> keepgoing [label="  no"];
+    keepgoing -> ask [style=dashed];
+}
